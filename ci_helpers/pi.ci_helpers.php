@@ -90,29 +90,35 @@ class Ci_helpers {
 		$this->_do_array_prep = $this->_EE->TMPL->fetch_param('array');
 		$this->_delimiter = $this->_EE->TMPL->fetch_param('delimiter') ? $this->_EE->TMPL->fetch_param('delimiter') : '|' ;
 		
-		
-		// If we have arcuments, we need to "prep" them
-		if (isset($this->_EE->TMPL->tagparams['argument[0]']))
-		{
-			// We know we have at least 1 argument.
-			$this->_arguments = $this->_prep_arguments($this->_EE->TMPL->tagparams);
-		}
+		$this->_log_item('Looking for the function "' . $function . '()" in the "' . ucwords($helper) . '" helper');
 		
 		// TODO create check to see if helper exists
-		// TODO create check to see if function exists
 		
 		// Load the requested helper file
 		$this->_EE->load->helper($helper);
 		
-		// Run the function and pass the argument(s) (if any were included)
-		// Some CI Helper functions don't need any arguments
-		if (count($this->_arguments) > 0)
+		// If the function doesn't exist at this point we should just stop processing things
+		if ( ! function_exists($function))
 		{
-			$arg = $this->_arguments;
-			$this->return_data =  $function($arg[0],$arg[1],$arg[2],$arg[3],$arg[4],$arg[5],$arg[6],$arg[7],$arg[8],$arg[9]);
-		} else {
-			$this->return_data =  $function();
+			$this->_log_item('Callback function ' . $function . '() not found.');
+			return;
 		}
+		
+		// We made it this far so the function exists. Let's process the rest of the plugin
+		$array_string = 'Array mode is ';
+		$array_string .= ($this->_do_array_prep) ? 'enabled' : 'disabled' ;
+		$this->_log_item($array_string);
+		
+		// If we have arguments, we need to "prep" them
+		if (isset($this->_EE->TMPL->tagparams['argument[0]']))
+		{
+			// We know we have at least 1 argument.
+			$this->_log_item('Arguments have been detected');
+			$this->_arguments = $this->_prep_arguments($this->_EE->TMPL->tagparams);
+		}
+		
+		// Run the function and pass the argument array
+		$this->return_data = call_user_func_array($function,$this->_arguments);
 		
 	}
 	// End function __construct()
@@ -124,15 +130,21 @@ class Ci_helpers {
 	 * Write items to template debugging log
 	 *
 	 * @param      string
+	 * @param      int
 	 * @access     private
 	 * @author     Erik Reagan <erik@focuslabllc.com>
 	 * @return     void
 	 */
-	private function _log_item($string = FALSE)
+	private function _log_item($string = FALSE, $indent = 1)
 	{
+		// Load the html helper to easily indent/tab our lines
+		// This allows for "pretty" formatting in the template debugger
+		$this->_EE->load->helper('html');
+		$tab = nbs(7 * $indent);
+		
 		if ($string)
 		{
-			$this->_EE->TMPL->log_item('-> CI Helpers -> ' . $string);
+			$this->_EE->TMPL->log_item($tab . ' - ' . $string);
 		}
 	}
 	// End function _log_item()
@@ -150,35 +162,17 @@ class Ci_helpers {
 	 */
 	private function _prep_arguments($params)
 	{
-		// We limit the arguments to 10
-		$limit = 10;
-		$count = 0;
+		$new_params = array();
 		foreach ($params as $key => $value)
 		{
 			if (strpos($key,'argument[') !== FALSE)
 			{
-				// Limit to x number of arguments
-				if ($count < $limit)
-				{
-					$params[$count] = ($this->_do_array_prep) ? $this->_prep_array($value) : $value ;
-				}
-				$count++;
-			}
-			unset($params[$key]);
-		}
-		
-		// How many arguments do we actually have?
-		$items = count($params);
-		
-		// If there are less than $limit arguments assign array keys to a NULL value
-		if ($items < $limit)
-		{
-			for ($i = $items; $i < 10; $i++) { 
-				$params[$i] = NULL;
+				$this->_log_item($key . " -> " . $value, 2);
+				$new_params[] = ($this->_do_array_prep) ? $this->_prep_array($value) : $value ;
 			}
 		}
 		
-		return $params;
+		return $new_params;
 	}
 	// End function _prep_arguments()
 	
@@ -212,6 +206,7 @@ class Ci_helpers {
 			if (strpos($value,'=>') !== FALSE) {
 				$key_value = explode('=>',$value);
 				$argument_array[$key_value[0]] = $key_value[1];
+				$this->_log_item($key_value[0] . ' -> ' . $key_value[1],3);
 				// Unset the original key
 				unset($argument_array[$key]);
 			}

@@ -45,5 +45,4 @@ h2. Todo
 
 * Create list of "unsafe" functions and disable them
 * Add in helper file check so as to avoid the core @show_error()@ display if one doesn't exist
-* Add in function check against helper
 * Add in template logging for helper/function checking & argument passing
