@@ -6,7 +6,7 @@
  * @package    CIHelpers
  * @author     Focus Lab, LLC <dev@focuslabllc.com>
  * @copyright  Copyright (c) 2011 Focus Lab, LLC
- * @link       https://github.com/focuslabllc/deployment_hooks.ee2_addon
+ * @link       https://github.com/erikreagan/ci_helpers.ee_addon
  * @license    MIT  http://opensource.org/licenses/mit-license.php
  */
 
