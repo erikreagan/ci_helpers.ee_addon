@@ -1,0 +1,49 @@
+h1. CI Helpers
+
+Bring CI Helpers into your EE templates. Full docs coming down the road...
+
+
+h2. Caveat emptor
+
+*It is not recommended you use this plugin yet on a live site. There could be security implications due to what some of the CI helpers do.*
+
+
+h2. Compatibility
+
+CI Helpers requires ExpressionEngine 2.1.3 or greater
+
+
+h2. Installation
+
+* Move the @ci_helper@ folder into your @expressionengine/third_party@ folder
+
+
+h2. Usage
+
+This add-on is only about 90 minutes old. Don't bend it too much unless you plan to patch/contribute and issue a pull request :)
+
+CI Helpers runs off of a single tag with a few parameters. The key parameters are @helper@ and @function@. As you assumed, @helper@ will be the Helper you want and @function@ is the function within the Helper. To see what helpers and functions are available, familiarize yourself with "CodeIgniter":http://codeigniter.com/user_guide/. 
+
+Sample syntax:
+
+<pre><code>{exp:ci_helpers
+    helper="html"
+    function="doctype"
+    argument[0]="html5"
+}
+</code></pre>
+
+The above code uses CI's HTML Helper and the Doctype function to create the markup for an HTML5 doctype declaration. This is the output:
+
+<pre><code><!DOCTYPE html>
+</code></pre>
+
+There's more cool stuff to document, but I need to go to a meeting. I'm just throwing it up on GitHub for now.
+
+
+h2. Todo
+
+* Create list of "unsafe" functions and disable them
+* Add in helper file check so as to avoid the core @show_error()@ display if one doesn't exist
+* Add in function check against helper
+* Add in template logging for helper/function checking & argument passing
