@@ -38,11 +38,58 @@ The above code uses CI's HTML Helper and the Doctype function to create the mark
 <pre><code><!DOCTYPE html>
 </code></pre>
 
-There's more cool stuff to document, but I need to go to a meeting. I'm just throwing it up on GitHub for now.
+Some CI helpers take arrays as parameters. You can send an array by delimiting values with a character of your choice. The default setting is a pipe ("|"). Alternatively you can define both the key and value in the array string.
+
+Here is an example of using an array of values (using the @random_element()@ function in the "Array Helper":http://codeigniter.com/user_guide/helpers/array_helper.html):
+
+<pre><code>{exp:ci_helpers
+    helper="array"
+    function="random_element"
+    array="y"
+    argument[0]="My first quote|My second quote|Here is another one"
+}
+</code></pre>
+
+Here is an example of using an array of key/value pairs (using the @set_cookie()@ function in the "Cookie Helper":http://codeigniter.com/user_guide/helpers/cookie_helper.html):
+
+<pre><code>{exp:ci_helpers
+    helper="cookie"
+    function="set_cookie"
+    array="y"
+    argument[0]="name=>The_Cookie_Name|value=>The Value|expire=>86500"
+}
+</code></pre>
+
+So, in order for any arguments to be processed as an array you must set the parameter @array="y"@ in your tag. For now this impacts all arguments passed, though I'm sure that could be tweaked on a per-argument basis if needed.
+
+You can alternately declare your own value delimiter from a pipe ("|") to something else.
+
+<pre><code>{exp:ci_helpers
+    helper="cookie"
+    function="set_cookie"
+    array="y"
+    delimiter="**"
+    argument[0]="name=>The_Cookie_Name**value=>The Value**expire=>86500"
+}
+</code></pre>
+
+
+h2. Template Logging
+
+Here's a quick sample of how each instance of CI Helper gets logged for template debugging:
+
+<pre>(0.071646) -> Class Called: Ci_helpers
+(0.071691)   - Looking for the function "set_cookie()" in the "Cookie" helper
+(0.072200)   - Array mode is enabled
+(0.072220)   - Arguments have been detected
+(0.072247)       - argument[0] -> name=>The_Cookie_Name**value=>The Value**expire=>86500
+(0.072274)           - name -> The_Cookie_Name
+(0.072296)           - value -> The Value
+(0.072317)           - expire -> 86500
+</pre>
 
 
 h2. Todo
 
 * Create list of "unsafe" functions and disable them
 * Add in helper file check so as to avoid the core @show_error()@ display if one doesn't exist
-* Add in template logging for helper/function checking & argument passing
