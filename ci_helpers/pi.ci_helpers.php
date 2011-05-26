@@ -95,7 +95,12 @@ class Ci_helpers {
 		// TODO create check to see if helper exists
 		
 		// Load the requested helper file
-		$this->_EE->load->helper($helper);
+		// This is sneaky, but if a helper isn't passed, the user can still use certain PHP call back functions...
+		// NOTE: change the above fact?
+		if($helper)
+		{
+			$this->_EE->load->helper($helper);
+		}
 		
 		// If the function doesn't exist at this point we should just stop processing things
 		if ( ! function_exists($function))
