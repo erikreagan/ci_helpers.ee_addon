@@ -12,7 +12,7 @@
 
 $plugin_info       = array(
 	'pi_name'        => 'CI Helpers',
-	'pi_version'     => '0.1',
+	'pi_version'     => '0.2',
 	'pi_author'      => 'Erik Reagan',
 	'pi_author_url'  => 'http://focuslabllc.com',
 	'pi_description' => 'Gain access to CI\'s helpers and functions within your EE templates',
